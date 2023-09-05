@@ -1,0 +1,22 @@
+name: Build for android
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build-android-armv7a:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build android-armv7a
+      run: |
+        scripts/build-android-armv7a.sh
+        mkdir kompiled
+        ./waf install --destdir ./kompiled/
+
+    - uses: actions/upload-artifact@v3
+      name: Upload Artifacts
+      with:
+        name: kompiled-android
+        path: kompiled/
