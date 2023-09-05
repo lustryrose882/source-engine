@@ -6,15 +6,12 @@
 
 #include "cbase.h"
 #include "c_playerattachedmodel.h"
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
-#endif
-#endif
-// Todo: Turn these all into parameters
+#endif// Todo: Turn these all into parameters
 #define PAM_ANIMATE_TIME		0.075
 #define PAM_ROTATE_TIME			0.075
 

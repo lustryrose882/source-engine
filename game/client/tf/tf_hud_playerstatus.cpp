@@ -26,15 +26,12 @@
 
 using namespace vgui;
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
-#endif
-
 extern ConVar tf_max_health_boost;
 
 

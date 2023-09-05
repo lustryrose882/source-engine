@@ -45,15 +45,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
-#endif
-
 // position of end of muzzle relative to shoot position
 #define TF_FLAMETHROWER_MUZZLEPOS_FORWARD		70.0f
 #define TF_FLAMETHROWER_MUZZLEPOS_RIGHT			12.0f

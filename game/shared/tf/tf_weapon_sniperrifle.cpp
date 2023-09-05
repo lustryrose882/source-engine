@@ -8,15 +8,12 @@
 #include "tf_weapon_sniperrifle.h"
 #include "in_buttons.h"
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
-#endif
-
 
 // Client specific.
 #ifdef CLIENT_DLL

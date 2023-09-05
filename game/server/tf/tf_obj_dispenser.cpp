@@ -17,15 +17,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
-#endif
-
 // Ground placed version
 #define DISPENSER_MODEL_PLACEMENT			"models/buildables/dispenser_blueprint.mdl"
 // *_UPGRADE models are models used during the upgrade transition

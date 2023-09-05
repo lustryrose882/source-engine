@@ -10,13 +10,12 @@
 #include "ammodef.h"
 #include "tf_gamerules.h"
 #include "eventlist.h"
-#if !defined(POSIX)
+
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
-#endif
 #endif
 
 // Server specific.

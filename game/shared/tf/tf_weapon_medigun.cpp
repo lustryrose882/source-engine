@@ -12,15 +12,12 @@
 #include "engine/IEngineSound.h"
 #include "tf_gamerules.h"
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
 #endif
-#endif
-
 #if defined( CLIENT_DLL )
 #include <vgui_controls/Panel.h>
 #include <vgui/ISurface.h>

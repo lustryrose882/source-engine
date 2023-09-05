@@ -12,15 +12,12 @@
 #include "engine/IEngineSound.h"
 #include "entity_ammopack.h"
 
-#if !defined(POSIX)
 #ifndef min
 	#define min(a,b)  (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef max
 	#define max(a,b)  (((a) > (b)) ? (a) : (b))
-#endif
-#endif
-//=============================================================================
+#endif//=============================================================================
 //
 // CTF AmmoPack defines.
 //
