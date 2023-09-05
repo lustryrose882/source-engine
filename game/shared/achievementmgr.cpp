@@ -20,9 +20,6 @@
 #include "achievement_notification_panel.h"
 #include "c_playerresource.h"
 #include "gamestats.h"
-#ifdef TF_CLIENT_DLL
-#include "econ_item_inventory.h"
-#endif //TF_CLIENT_DLL
 #else
 #include "enginecallback.h"
 #endif // CLIENT_DLL
@@ -43,7 +40,7 @@
 #include "engine/imatchmaking.h"
 #include "tier0/vprof.h"
 
-#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
+#if defined ( TF_DLL ) || defined ( TF_CLIENT_DLL )
 #include "tf_gamerules.h"
 #endif
 
@@ -1092,21 +1089,6 @@ bool CAchievementMgr::CheckAchievementsEnabled()
 	// HPE_END
 	//=============================================================================
 #endif // CSTRIKE_DLL	
-
-#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
-	// no achievements for now in training
-	if ( TFGameRules() && TFGameRules()->IsInTraining() && TFGameRules()->AllowTrainingAchievements() == false )
-	{
-		return false;
-	}
-
-	ConVarRef tf_bot_offline_practice( "tf_bot_offline_practice" );
-	// no achievements for offline practice
-	if ( tf_bot_offline_practice.GetInt() != 0 )
-	{
-		return false;
-	}
-#endif
 
 #if DEBUG_ACHIEVEMENTS_IN_RELEASE
 	return true;

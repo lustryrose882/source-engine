@@ -20,7 +20,7 @@ $Games
 	"LOSTCOAST"
 	"PORTAL"
 	"SDK"
-	"TF"
+	"TF_MOD"
 }
 
 $Include "vpc_scripts\projects.vgc"

@@ -41,7 +41,7 @@ ConVar sv_vote_timer_duration("sv_vote_timer_duration", "15", FCVAR_DEVELOPMENTO
 ConVar sv_vote_command_delay("sv_vote_command_delay", "2", FCVAR_DEVELOPMENTONLY, "How long after a vote passes until the action happens", false, 0, true, 4.5);
 ConVar sv_allow_votes("sv_allow_votes", "1", 0, "Allow voting?");
 ConVar sv_vote_failure_timer("sv_vote_failure_timer", "300", 0, "A vote that fails cannot be re-submitted for this long");
-#ifdef TF_DLL
+#if defined (TF_DLL)
 ConVar sv_vote_failure_timer_mvm( "sv_vote_failure_timer_mvm", "120", 0, "A vote that fails in MvM cannot be re-submitted for this long" );
 #endif // TF_DLL
 ConVar sv_vote_creation_timer("sv_vote_creation_timer", "120", FCVAR_DEVELOPMENTONLY, "How often someone can individually call a vote.");
@@ -693,13 +693,6 @@ bool CVoteController::IsValidVoter( CBasePlayer *pWhom )
 	if ( pWhom->IsReplay() )
 		return false;
 
-#ifdef TF_DLL
-	if ( TFGameRules() && TFGameRules()->IsMannVsMachineMode() )
-	{
-		if ( pWhom->GetTeamNumber() != TF_TEAM_PVE_DEFENDERS )
-			return false;
-	}
-#endif // TF_DLL
 
 	return true;
 }

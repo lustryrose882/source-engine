@@ -289,6 +289,11 @@ void AI_Response::GetName( char *buf, size_t buflen ) const
 	Q_strncpy( buf, m_szResponseName, buflen );
 }
 
+const char * AI_Response::GetNamePtr(  ) const // AVSARTODO
+{
+	return m_szResponseName;
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 

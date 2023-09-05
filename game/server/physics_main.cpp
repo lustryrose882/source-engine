@@ -96,9 +96,7 @@ static void PhysicsCheckSweep( CBaseEntity *pEntity, const Vector& vecAbsStart, 
 }
 
 CPhysicsPushedEntities s_PushedEntities;
-#ifndef TF_DLL
 CPhysicsPushedEntities *g_pPushedEntities = &s_PushedEntities;
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: 

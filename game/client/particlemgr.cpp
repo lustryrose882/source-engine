@@ -26,9 +26,7 @@
 #include "filesystem.h"
 #include "particle_parse.h"
 #include "model_types.h"
-#ifdef TF_CLIENT_DLL
-#include "rtime.h"
-#endif
+
 #include "tier0/icommandline.h"
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2363,66 +2361,6 @@ void CParticleMgr::StatsReset()
 void CParticleMgr::StatsSpewResults()
 {
 #ifdef STAGING_ONLY
-#ifdef TF_CLIENT_DLL
-	int nCount = ProfilingHistogram.GetNumStrings();
-
-	Msg( "Active particle systems. Numbers are averages over %d frames. Max num particles %d.\n", Profiling_nFrames, Profiling_nMaxParticles );
-	Msg( "Name\t\t\t\t\t\tSystems\t\tActive\t\tDrawn\tAv Children\t\tMaximums per frame\t\t\tMax draw dist\n" );
-	for ( int i = 0; i < nCount; ++i )
-	{
-		ParticleInfo_t *pParticleInfo = &(ProfilingHistogram[i]);
-		if ( pParticleInfo->m_nTotalActiveParticles > 0 )
-		{
-			Msg( "%38s\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t%d\t%d\t%d\t\t%.1f\n",
-				ProfilingHistogram.String(i),
-				pParticleInfo->m_nCount / Profiling_nFrames,
-				pParticleInfo->m_nTotalActiveParticles / Profiling_nFrames,
-				pParticleInfo->m_nTotalDrawnParticles / Profiling_nFrames,
-				pParticleInfo->m_nChildCount / pParticleInfo->m_nCount,
-				pParticleInfo->m_nCountMax,
-				pParticleInfo->m_nTotalActiveParticlesMax,
-				pParticleInfo->m_nTotalDrawnParticlesMax,
-				pParticleInfo->m_nChildCountMax / pParticleInfo->m_nCountMax,
-				( pParticleInfo->pDef == NULL ) ? 0.0f : pParticleInfo->pDef->m_flMaxDrawDistance
-				);
-		}
-	}
-
-	CRTime CurrentTime;
-	CurrentTime.SetToCurrentTime();
-
-	// Also dump to CSV.
-	FileHandle_t fh = g_pFullFileSystem->Open( "particle_stats.csv", "at" );	// at = append + text mode
-	g_pFullFileSystem->FPrintf( fh, "\nNumframes,%d,Max particles,%d\n", Profiling_nFrames, Profiling_nMaxParticles );
-	g_pFullFileSystem->FPrintf( fh, "Date,%d,%d,%d,Time,%d,%d,%d\n",
-		CurrentTime.GetYear(),
-		CurrentTime.GetMonth()+1,		// GetMonth() returns 0...11
-		CurrentTime.GetDayOfMonth(),	// GetDay() returns 1...31
-		CurrentTime.GetHour(),
-		CurrentTime.GetMinute(),
-		CurrentTime.GetSecond() );
-	g_pFullFileSystem->FPrintf( fh, "Name, Systems, Particles active, Particles drawn, Av Children, Max systems, Max particles active, Max particles drawn, Max children, Max draw distance\n" );
-	for ( int i = 0; i < nCount; ++i )
-	{
-		ParticleInfo_t *pParticleInfo = &(ProfilingHistogram[i]);
-		if ( pParticleInfo->m_nTotalActiveParticles > 0 )
-		{
-			g_pFullFileSystem->FPrintf( fh, "%s,%d,%d,%d,%d,%d,%d,%d,%d,%.1f\n",
-				ProfilingHistogram.String(i),
-				pParticleInfo->m_nCount / Profiling_nFrames,
-				pParticleInfo->m_nTotalActiveParticles / Profiling_nFrames,
-				pParticleInfo->m_nTotalDrawnParticles / Profiling_nFrames,
-				pParticleInfo->m_nChildCount / pParticleInfo->m_nCount,
-				pParticleInfo->m_nCountMax,
-				pParticleInfo->m_nTotalActiveParticlesMax,
-				pParticleInfo->m_nTotalDrawnParticlesMax,
-				pParticleInfo->m_nChildCountMax / pParticleInfo->m_nCountMax,
-				( pParticleInfo->pDef == NULL ) ? 0.0f : pParticleInfo->pDef->m_flMaxDrawDistance
-				);
-		}
-	}
-	g_pFullFileSystem->Close( fh );
-#endif
 #endif
 }
 

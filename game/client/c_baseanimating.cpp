@@ -1285,29 +1285,6 @@ void C_BaseAnimating::DelayedInitModelEffects( void )
 							return;
 						}
 					}
-					#ifdef TF_CLIENT_DLL
-					// Halloween Hack for Sentry Rockets
-					if ( !V_strcmp( "sentry_rocket", pszParticleEffect ) )
-					{
-						// Halloween Spell Effect Check
-						int iHalloweenSpell = 0;
-						// if the owner is a Sentry, Check its owner
-						CBaseObject *pSentry = dynamic_cast<CBaseObject*>( GetOwnerEntity() );
-						if ( pSentry )
-						{
-							CALL_ATTRIB_HOOK_INT_ON_OTHER( pSentry->GetOwner(), iHalloweenSpell, halloween_pumpkin_explosions );
-						}
-						else
-						{
-							CALL_ATTRIB_HOOK_INT_ON_OTHER( GetOwnerEntity(), iHalloweenSpell, halloween_pumpkin_explosions );
-						}
-
-						if ( iHalloweenSpell > 0 )
-						{
-							pszParticleEffect = "halloween_rockettrail";
-						}
-					}
-					#endif
 					// Spawn the particle effect
 					ParticleProp()->Create( pszParticleEffect, (ParticleAttachment_t)iAttachType, iAttachment );
 				}
