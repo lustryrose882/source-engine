@@ -3035,6 +3035,10 @@ int C_BaseAnimating::DrawModel( int flags )
 	if ( !m_bReadyToDraw )
 		return 0;
 
+#if defined( TF_CLIENT_DLL )
+	ValidateModelIndex();
+#endif
+
 	int drawn = 0;
 
 	if ( r_drawothermodels.GetInt() )

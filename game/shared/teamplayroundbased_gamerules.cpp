@@ -1595,6 +1595,14 @@ void CTeamplayRoundBasedRules::State_Think_TEAM_WIN( void )
 {
 	if( gpGlobals->curtime > m_flStateTransitionTime )
 	{
+#if defined( TF_DLL )
+		IGameEvent *event = gameeventmanager->CreateEvent( "scorestats_accumulated_update" );
+		if ( event )
+		{
+			gameeventmanager->FireEvent( event );
+		}
+#endif // TF_DLL
+
 		bool bDone = !(!CheckTimeLimit() && !CheckWinLimit() && !CheckMaxRounds() && !CheckNextLevelCvar());
 
 		// check the win limit, max rounds, time limit and nextlevel cvar before starting the next round

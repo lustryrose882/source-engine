@@ -55,7 +55,7 @@ ConVar	sv_maxspeed		( "sv_maxspeed", "320", FCVAR_NOTIFY | FCVAR_REPLICATED | FC
 	
 #endif//_XBOX
 
-#if defined( CSTRIKE_DLL ) || defined( HL1MP_DLL )
+#if defined( CSTRIKE_DLL ) || defined( HL1MP_DLL ) || defined( TF_DLL )
 ConVar	sv_airaccelerate(  "sv_airaccelerate", "10", FCVAR_NOTIFY | FCVAR_REPLICATED);    
 ConVar	sv_wateraccelerate(  "sv_wateraccelerate", "10", FCVAR_NOTIFY | FCVAR_REPLICATED);     
 ConVar	sv_waterfriction(  "sv_waterfriction", "1", FCVAR_NOTIFY | FCVAR_REPLICATED);      
