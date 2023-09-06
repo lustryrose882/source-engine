@@ -8,37 +8,7 @@
 #pragma once
 #endif
 
-#if defined( TF_CLIENT_DLL )
-
-#  include "tf_gamestats_shared.h"
-
-#  define REPLAY_GAMESTATS_UNDEFINED		TFSTAT_UNDEFINED
-#  define REPLAY_GAMESTATS_REVENGE			TFSTAT_REVENGE
-#  define REPLAY_GAMESTATS_DEATHS			TFSTAT_DEATHS
-#  define REPLAY_GAMESTATS_DOMINATIONS		TFSTAT_DOMINATIONS
-#  define REPLAY_GAMESTATS_POINTSSCORED		TFSTAT_POINTSSCORED
-#  define REPLAY_GAMESTATS_MAX				TFSTAT_TOTAL
-
-#  define REPLAY_TEAM_TEAM0					TF_TEAM_RED
-#  define REPLAY_TEAM_TEAM1					TF_TEAM_BLUE
-
-#  define REPLAY_CLASS_UNDEFINED			TF_CLASS_UNDEFINED
-#  define REPLAY_NUM_CLASSES				TF_CLASS_MENU_BUTTONS
-
-#  define REPLAY_DEATH_DOMINATION			TF_DEATH_DOMINATION
-#  define REPLAY_DEATH_ASSISTER_DOMINATION	TF_DEATH_ASSISTER_DOMINATION
-#  define REPLAY_DEATH_REVENGE				TF_DEATH_REVENGE
-#  define REPLAY_DEATH_ASSISTER_REVENGE		TF_DEATH_ASSISTER_REVENGE
-
-#  define	C_ReplayGame_PlayerResource		
-#  include "c_tf_playerresource.h"
-typedef C_TF_PlayerResource					C_ReplayGame_PlayerResource_t;
-
-#  define ReplayStatType_t					TFStatType_t
-
-#  define REPLAY_MAX_DISPLAY_GAMESTATS		23
-
-#elif defined( CSTRIKE_DLL )
+#if defined( CSTRIKE_DLL )
 
 #  include "cs_gamestats_shared.h"
 

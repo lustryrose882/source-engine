@@ -8,10 +8,6 @@
 #include "cbase.h"
 #include "movevars_shared.h"
 
-#if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
-#include "tf_gamerules.h"
-#endif
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -24,7 +20,6 @@
 
 float GetCurrentGravity( void )
 {
-
 	return sv_gravity.GetFloat();
 }
 

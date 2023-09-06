@@ -35,8 +35,6 @@ ConVar hap_HasDevice	( "hap_HasDevice", "0", FCVAR_USERINFO/*|FCVAR_HIDDEN*/, "f
 // damage scale on a title basis. Convar referenced in the haptic dll.
 #ifdef PORTAL
 #define HAP_DEFAULT_DAMAGE_SCALE_GAME "0.75"
-#elif TF_CLIENT_DLL
-#define HAP_DEFAULT_DAMAGE_SCALE_GAME "0.3"
 #else
 #define HAP_DEFAULT_DAMAGE_SCALE_GAME "1.0"
 #endif
@@ -281,7 +279,7 @@ void UpdateAvatarEffect(void)
 #ifndef CLIENT_DLL
 void HapticsDamage(CBasePlayer* pPlayer, const CTakeDamageInfo &info)
 {
-#if !defined(TF_DLL) && !defined(CSTRIKE_DLL)
+#if !defined(CSTRIKE_DLL)
 	if(!pPlayer->HasHaptics())
 		return;// do not send to non haptic users.
 

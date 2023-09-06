@@ -2865,6 +2865,13 @@ void CTeamplayRoundBasedRules::ResetScores( void )
 	m_bResetPlayerScores = true;
 	m_bResetRoundsPlayed = true;
 	//m_flStopWatchTime = -1.0f;
+#if defined( TF_DLL )
+	IGameEvent *event = gameeventmanager->CreateEvent( "scorestats_accumulated_reset" );
+	if ( event )
+	{
+		gameeventmanager->FireEvent( event );
+	}
+#endif // TF_DLL
 }
 
 //-----------------------------------------------------------------------------
@@ -3022,7 +3029,12 @@ string_t CTeamplayRoundBasedRules::GetLastPlayedRound( void )
 //-----------------------------------------------------------------------------
 CTeamRoundTimer *CTeamplayRoundBasedRules::GetActiveRoundTimer( void )
 {
+#if defined( TF_DLL )
+	int iTimerEntIndex = ObjectiveResource()->GetTimerInHUD();
+	return ( dynamic_cast<CTeamRoundTimer *>( UTIL_EntityByIndex( iTimerEntIndex ) ) );
+#else
 	return NULL;
+#endif
 }
 
 #endif // GAME_DLL

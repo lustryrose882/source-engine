@@ -55,11 +55,6 @@
 #include "studio_stats.h"
 #include "tier1/callqueue.h"
 
-#ifdef TF_CLIENT_DLL
-#include "c_tf_player.h"
-#include "c_baseobject.h"
-#endif
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -3041,10 +3036,6 @@ int C_BaseAnimating::DrawModel( int flags )
 		return 0;
 
 	int drawn = 0;
-
-#ifdef TF_CLIENT_DLL
-	ValidateModelIndex();
-#endif
 
 	if ( r_drawothermodels.GetInt() )
 	{

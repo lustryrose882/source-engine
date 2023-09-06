@@ -16,10 +16,6 @@
 #include "terror/TerrorNav.h"
 #endif
 
-#ifdef TF_DLL
-#include "tf/nav_mesh/tf_nav_mesh.h"
-#endif
-
 #ifdef CSTRIKE_DLL
 #include "cstrike/cs_nav_mesh.h"
 #endif
@@ -31,10 +27,6 @@ CNavMesh *NavMeshFactory( void )
 {
 #ifdef TERROR
 	return new TerrorNavMesh;
-#endif
-
-#ifdef TF_DLL
-	return new CTFNavMesh;
 #endif
 
 #ifdef CSTRIKE_DLL

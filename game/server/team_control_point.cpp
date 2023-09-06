@@ -15,10 +15,6 @@
 #include "engine/IEngineSound.h"
 #include "soundenvelope.h"
 
-#ifdef TF_DLL
-#include "tf_shareddefs.h"
-#endif
-
 #define CONTROL_POINT_UNLOCK_THINK			"UnlockThink"
 
 BEGIN_DATADESC(CTeamControlPoint)
@@ -82,10 +78,6 @@ CTeamControlPoint::CTeamControlPoint()
 
 	m_bLocked = false;
 	m_flUnlockTime = -1;
-
-#ifdef  TF_DLL
-	UseClientSideAnimation();
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -269,6 +261,7 @@ void CTeamControlPoint::Precache( void )
 
 #if defined (TF_DLL)
 	PrecacheScriptSound( "Announcer.ControlPointContested" );
+	PrecacheScriptSound( "Announcer.ControlPointContested_Neutral" );
 #endif
 }
 
@@ -306,14 +299,6 @@ void CTeamControlPoint::HandleScoring( int iTeam )
 		CTeamControlPointMaster *pMaster = g_hControlPointMasters.Count() ? g_hControlPointMasters[0] : NULL;
 		if ( pMaster && !pMaster->WouldNewCPOwnerWinGame( this, iTeam ) )
 		{
-#if defined (TF_DLL)
-			if ( TeamplayRoundBasedRules()->GetGameType() == TF_GAMETYPE_ESCORT )
-			{
-				CBroadcastRecipientFilter filter;
-				EmitSound( filter, entindex(), "Hud.EndRoundScored" );
-			}
-			else
-#endif
 			{
 				CTeamRecipientFilter filter( iTeam );
 				EmitSound( filter, entindex(), "Hud.EndRoundScored" );

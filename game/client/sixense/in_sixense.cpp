@@ -13,23 +13,12 @@
 #include "sixense/in_sixense.h"
 #include "sixense/sixense_convars_extern.h"
 
-#if !defined( HL2_CLIENT_DLL) && !defined( TF_CLIENT_DLL )
+#if !defined( HL2_CLIENT_DLL)
 #include "weapon_csbase.h"
 #endif
 
 #if defined( HL2_CLIENT_DLL )
 #include "c_basehlplayer.h"
-#endif
-
-#if defined( TF_CLIENT_DLL )
-#include "c_tf_player.h"
-#include "tf_weaponbase.h"
-#include "tf_weapon_sniperrifle.h"
-#include "tf_gamerules.h"
-#include "backpack_panel.h"
-#include "baseviewport.h"
-extern ConVar _cl_classmenuopen;
-extern const char *COM_GetModDirectory();
 #endif
 
 #if defined( CSTRIKE15 ) || defined (CSTRIKE_DLL)
@@ -63,12 +52,6 @@ using sixenseMath::Line;
 #include "game/client/iviewport.h"
 #include "filesystem.h"
 #include "sourcevr/isourcevirtualreality.h"
-
-#ifdef TF_CLIENT_DLL
-#include "tf_hud_menu_engy_build.h"
-#include "tf_hud_menu_engy_destroy.h"
-#include "tf_hud_menu_spy_disguise.h"
-#endif 
 
 #ifdef PORTAL2
 #include "BasePanel.h"
@@ -1355,7 +1338,7 @@ void SixenseInput::SetBaseOffset()
 void SixenseInput::GetFOV( float *hfov, float *vfov )
 {
 
-#if ( defined( HL2_CLIENT_DLL ) || defined( TF_CLIENT_DLL ) || defined( CSTRIKE_DLL ) ) && !defined( CSTRIKE15 ) && !defined( TERROR )
+#if ( defined( HL2_CLIENT_DLL ) || defined( CSTRIKE_DLL ) ) && !defined( CSTRIKE15 ) && !defined( TERROR )
 	float engineAspectRatio = engine->GetScreenAspectRatio();
 #else
 	// avoid GetLocalPlayer() assert...
@@ -1482,16 +1465,6 @@ bool SixenseInput::InMenuMode()
 	}
 
 #endif
-
-#if defined( TF_CLIENT_DLL )
-	CTFPlayer *pTFPlayer = dynamic_cast<CTFPlayer *>(C_BasePlayer::GetLocalPlayer());
-	if( pTFPlayer && pTFPlayer->m_Shared.GetState() == TF_STATE_DYING )
-	{
-		return true;
-	}
-
-#endif
-
 
 
 	if( 
@@ -1772,16 +1745,7 @@ void SixenseInput::CheckWeaponForScope()
 	}
 #endif
 
-#if defined( TF_CLIENT_DLL)
-	CTFPlayer *ctfPlayer = dynamic_cast<CTFPlayer *>(C_BasePlayer::GetLocalPlayer());
-
-	if ( ctfPlayer && ctfPlayer->m_Shared.InCond( TF_COND_ZOOMED ) )
-	{
-		zoomed = true;
-	}
-#endif
-
-#if !defined( HL2_CLIENT_DLL ) && !defined( CSTRIKE_DLL ) && !defined( TF_CLIENT_DLL)
+#if !defined( HL2_CLIENT_DLL ) && !defined( CSTRIKE_DLL )
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 
 	if( pPlayer )
@@ -1821,22 +1785,6 @@ void SixenseInput::CheckWeaponForScope()
 	}
 	else if( !zoomed && m_bScopeSwitchedMode )
 	{
-
-#if defined( TF_CLIENT_DLL)
-
-		// In TF2 wait until we're done reloading before switching back to metroid mode
-		C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-
-		if( pPlayer )
-		{
-			CTFSniperRifle *tfSniperRifle = dynamic_cast<CTFSniperRifle *>(pPlayer->GetActiveWeapon());
-
-			if( tfSniperRifle && (tfSniperRifle->GetRezoomTime() != -1.0f) )
-			{
-				return;
-			}
-		}
-#endif
 
 #if defined( CSTRIKE15 ) || defined (CSTRIKE_DLL)
 		C_CSPlayer *csPlayer = dynamic_cast<C_CSPlayer *>(C_BasePlayer::GetLocalPlayer());
@@ -2401,10 +2349,6 @@ sixenseMath::Vector3 FixAngles( QAngle qa )
 
 }
 
-#if defined( TF_CLIENT_DLL )
-static float g_fDemoChargeViewOffsetScale = 1.0f;
-#endif
-
 void SixenseInput::SetView( float flInputSampleFrametime, CUserCmd *pCmd )
 {
 
@@ -2429,43 +2373,6 @@ void SixenseInput::SetView( float flInputSampleFrametime, CUserCmd *pCmd )
 		spin_speed[PITCH] = 0.f;
 		spin_speed[ROLL] = 0.f;
 	}
-
-#if defined( TF_CLIENT_DLL )
-
-	static bool last_charge = false, charging = false;
-	bool charge_started=false, charge_stopped=false;
-
-	CTFPlayer *pPlayer = ToTFPlayer( C_BasePlayer::GetLocalPlayer() );
-	if ( pPlayer ) 
-	{
-		charging = pPlayer->m_Shared.InCond( TF_COND_SHIELD_CHARGE );
-		if ( charging )
-		{
-			if( !last_charge )
-			{
-				charge_started = true;
-			}
-		}
-		else
-		{
-			if( last_charge )
-			{
-				charge_stopped = true;
-			}
-		}
-	}
-	last_charge = charging;
-
-	if( charging )
-	{
-		g_fDemoChargeViewOffsetScale *= 0.9f;
-	}
-	else
-	{
-		g_fDemoChargeViewOffsetScale = g_fDemoChargeViewOffsetScale * 0.9f + 0.1f;
-	}
-
-#endif
 
 	// Keep track of the total accumulated spin angle. This accumulation is done outisde of sixenseUtils because we need to
 	// keep a close look on the engine time to do proper time sync.
@@ -2499,27 +2406,7 @@ void SixenseInput::SetView( float flInputSampleFrametime, CUserCmd *pCmd )
 
 	QAngle new_viewangles = FixAngles( m_pFPSViewAngles->getViewAngles() );
 
-
-#if defined( TF_CLIENT_DLL )
-	// Dont turn when charging
-	if( !charging )
-	{
-		engine->SetViewAngles( new_viewangles );
-	}
-
-	if( charge_stopped )
-	{
-
-		QAngle engine_angles;
-		engine->GetViewAngles( engine_angles );
-
-		ForceViewAngles( engine_angles );
-		Msg("charge stopped\n");
-	}
-#else
-	// Set the engine's aim direction
 	engine->SetViewAngles( new_viewangles );
-#endif
 
 	if ( pCmd )
 	{
@@ -2636,41 +2523,6 @@ void SixenseInput::SixenseUpdateKeys( float flFrametime, CUserCmd *pCmd )
 
 		}
 
-#ifdef TF_CLIENT_DLL
-		// certain tf menus want '0' to cancel, not escape.
-		if( gViewPortInterface )
-		{
-			IViewPortPanel *panel = gViewPortInterface->GetActivePanel();
-
-			if( panel )
-			{
-				// if the class or team menus are up hide it with start
-				if( ( Q_strcmp( panel->GetName(), "class_blue" ) == 0 ) ||
-					( Q_strcmp( panel->GetName(), "class_red" ) == 0 ) ||
-					( Q_strcmp( panel->GetName(), "team" ) == 0 ) )
-				{
-
-					if ( m_pLeftButtonStates->buttonJustPressed( SIXENSE_BUTTON_START ) )
-					{
-						panel->ShowPanel( false );
-					}
-
-				}
-				else
-				{
-					// otherwise just do esc like normal
-					if ( m_pLeftButtonStates->buttonJustPressed( SIXENSE_BUTTON_START ) )
-					{
-						::sendKeyState( 0x01, 1, 0); // 0x01 == esc
-					}
-					if ( m_pLeftButtonStates->buttonJustReleased( SIXENSE_BUTTON_START ) )
-					{
-						::sendKeyState( 0x01, 0, 1); // 0x01 == esc
-					}
-				}
-			}
-		}
-#else
 		// Press escape when the menu is up as well so we can exit
 		if ( m_pLeftButtonStates->buttonJustPressed( SIXENSE_BUTTON_START ) )
 		{
@@ -2680,7 +2532,6 @@ void SixenseInput::SixenseUpdateKeys( float flFrametime, CUserCmd *pCmd )
 		{
 			::sendKeyState( 0x01, 0, 1); // 0x01 == esc
 		}
-#endif
 
 		return;
 	}
@@ -2737,92 +2588,6 @@ void SixenseInput::SixenseUpdateKeys( float flFrametime, CUserCmd *pCmd )
 	{
 		::sendKeyState( 0x01, 0, 1); // 0x01 == esc scancode
 	}
-#endif
-
-#ifdef TF_CLIENT_DLL
-	CHudMenuSpyDisguise *pSpyMenu = ( CHudMenuSpyDisguise * )GET_HUDELEMENT( CHudMenuSpyDisguise );
-	if( pSpyMenu->IsVisible() ) 
-	{
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_LEFT ) )
-		{
-			pSpyMenu->HudElementKeyInput( 1, KEY_1, "slot1" );
-		}
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_UP ) )
-		{
-			pSpyMenu->HudElementKeyInput( 1, KEY_2, "slot2" );
-		}
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_RIGHT ) )
-		{
-			pSpyMenu->HudElementKeyInput( 1, KEY_3, "slot3" );
-		}
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_DOWN ) )
-		{
-			engine->ExecuteClientCmd( "lastinv" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_JOYSTICK ) )
-		{
-			pSpyMenu->HudElementKeyInput( 1, KEY_3, "disguiseteam" );
-		}
-	}
-
-	CHudMenuEngyBuild *pEngBuildMenu = ( CHudMenuEngyBuild * )GET_HUDELEMENT( CHudMenuEngyBuild );
-	if( pEngBuildMenu->IsVisible() )
-	{
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_3 ) )
-		{
-			pEngBuildMenu->HudElementKeyInput( 1, KEY_1, "slot1" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_1 ) )
-		{
-			pEngBuildMenu->HudElementKeyInput( 1, KEY_2, "slot2" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_2 ) )
-		{
-			pEngBuildMenu->HudElementKeyInput( 1, KEY_3, "slot3" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_4 ) )
-		{
-			pEngBuildMenu->HudElementKeyInput( 1, KEY_4, "slot4" );
-		}
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_DOWN ) )
-		{
-			engine->ExecuteClientCmd( "lastinv" );
-		}
-	}
-
-	CHudMenuEngyDestroy *pEngDestroyMenu = ( CHudMenuEngyDestroy * )GET_HUDELEMENT( CHudMenuEngyDestroy );
-	if( pEngDestroyMenu->IsVisible() )
-	{
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_3 ) )
-		{
-			pEngDestroyMenu->HudElementKeyInput( 1, KEY_1, "slot1" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_1 ) )
-		{
-			pEngDestroyMenu->HudElementKeyInput( 1, KEY_2, "slot2" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_2 ) )
-		{
-			pEngDestroyMenu->HudElementKeyInput( 1, KEY_3, "slot3" );
-		}
-		if( m_pRightButtonStates->buttonJustPressed( SIXENSE_BUTTON_4 ) )
-		{
-			pEngDestroyMenu->HudElementKeyInput( 1, KEY_4, "slot4" );
-		}
-		if( m_pRightButtonStates->stickJustPressed( sixenseUtils::IButtonStates::DIR_DOWN ) )
-		{
-			engine->ExecuteClientCmd( "lastinv" );
-		}
-	}
-
-	if ( TFGameRules() && TFGameRules()->IsInTraining() )
-	{
-		if( m_pLeftButtonStates->absoluteTiltJustStarted( sixenseUtils::IButtonStates::DIR_UP ) )
-		{
-			engine->ClientCmd_Unrestricted( "training_continue" );
-		}
-	}
-
 #endif
 
 #ifdef PORTAL2
@@ -3176,7 +2941,7 @@ bool SixenseInput::SendKeyToActiveWindow(ButtonCode_t key)
 void SixenseInput::SixenseUpdateMouseCursor()
 {
 
-#if defined( HL2_CLIENT_DLL ) || defined( TF_CLIENT_DLL )
+#if defined( HL2_CLIENT_DLL )
 	// If there's no mouse cursor visible, don't ever move the mouse or click here.
 	// Gesture bindings can still call 'sixense_left_click' for times when a click is
 	// necessary but no mouse cursor.
@@ -3262,24 +3027,7 @@ void SixenseInput::SixenseUpdateMouseCursor()
 #ifdef HL2_CLIENT_DLL
 	const char *window_name = "Half-Life 2";
 #endif
-#ifdef TF_CLIENT_DLL
-	
-	const int str_len = 128;
-	static char window_name[str_len] = "\0";
 
-	if( window_name[0] == '\0' )
-	{
-		const char *pGameDir = COM_GetModDirectory();
-		if ( FStrEq( pGameDir, "tf_beta" ) )
-		{
-			Q_strncpy( window_name, "Team Fortress 2 Beta", str_len );
-		}
-		else
-		{
-			Q_strncpy( window_name, "Team Fortress 2", str_len );
-		}
-	}
-#endif
 #ifdef TERROR
 	const char *window_name = "Left 4 Dead 2";
 #endif
@@ -3474,10 +3222,6 @@ QAngle SixenseInput::GetViewAngleOffset()
 			sixense_aim_angle[YAW] = vec[0];
 			sixense_aim_angle[PITCH] = vec[1];
 			sixense_aim_angle[ROLL] = vec[2];
-
-#if defined( TF_CLIENT_DLL )
-			sixense_aim_angle *= g_fDemoChargeViewOffsetScale;
-#endif
 
 			return sixense_aim_angle;
 		}
@@ -4016,26 +3760,6 @@ bool SixenseInput::AreBindingsDisabled()
 	{
 		return true;
 	}
-
-#ifdef TF_CLIENT_DLL
-	CHudMenuSpyDisguise *pSpyMenu = ( CHudMenuSpyDisguise * )GET_HUDELEMENT( CHudMenuSpyDisguise );
-	if( pSpyMenu->IsVisible() ) 
-	{
-		return true;
-	}
-
-	CHudMenuEngyBuild *pEngBuildMenu = ( CHudMenuEngyBuild * )GET_HUDELEMENT( CHudMenuEngyBuild );
-	if( pEngBuildMenu->IsVisible() ) 
-	{
-		return true;
-	}
-
-	CHudMenuEngyDestroy *pEngDestroyMenu = ( CHudMenuEngyDestroy * )GET_HUDELEMENT( CHudMenuEngyDestroy );
-	if( pEngDestroyMenu->IsVisible() ) 
-	{
-		return true;
-	}
-#endif
 
 	return false;
 }

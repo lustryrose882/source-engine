@@ -24,11 +24,6 @@
 #include "AmbientLight.h"
 #endif
 
-#ifdef TF_DLL
-#include "tf_player.h"
-#include "bot/tf_bot.h"
-#endif
-
 #include "Color.h"
 #include "collisionutils.h"
 #include "functorutils.h"
@@ -176,91 +171,6 @@ bool CFuncNavCost::IsApplicableTo( CBaseCombatCharacter *who ) const
 			return false;
 		}
 	}
-
-#ifdef TF_DLL
-	// TODO: Make group comparison efficient and move to base combat character
-	CTFBot *bot = ToTFBot( who );
-	if ( bot )
-	{
-		if ( bot->HasTheFlag() )
-		{
-			if ( HasTag( "bomb_carrier" ) )
-			{
-				return true;
-			}
-
-			// check custom bomb_carrier tags for this bot
-			for( int i=0; i<m_tags.Count(); ++i )
-			{
-				const char* pszTag = m_tags[i];
-				if ( V_stristr( pszTag, "bomb_carrier" ) )
-				{
-					if ( bot->HasTag( pszTag ) )
-					{
-						return true;
-					}
-				}
-			}
-
-			// the bomb carrier only pays attention to bomb_carrier costs
-			return false;
-		}
-
-		if ( bot->HasMission( CTFBot::MISSION_DESTROY_SENTRIES ) )
-		{
-			if ( HasTag( "mission_sentry_buster" ) )
-			{
-				return true;
-			}
-		}
-		
-		if ( bot->HasMission( CTFBot::MISSION_SNIPER ) )
-		{
-			if ( HasTag( "mission_sniper" ) )
-			{
-				return true;
-			}
-		}
-		
-		if ( bot->HasMission( CTFBot::MISSION_SPY ) )
-		{
-			if ( HasTag( "mission_spy" ) )
-			{
-				return true;
-			}
-		}
-
-		if ( bot->HasMission( CTFBot::MISSION_REPROGRAMMED ) )
-		{
-			return false;
-		}
-
-		if ( !bot->IsOnAnyMission() )
-		{
-			if ( HasTag( "common" ) )
-			{
-				return true;
-			}
-		}
-
-		if ( HasTag( bot->GetPlayerClass()->GetName() ) )
-		{
-			return true;
-		}
-
-		// check custom tags for this bot
-		for( int i=0; i<m_tags.Count(); ++i )
-		{
-			if ( bot->HasTag( m_tags[i] ) )
-			{
-				return true;
-			}
-		}
-
-		// this cost doesn't apply to me
-		return false;
-	}
-#endif
 
 	return false;
 }

@@ -521,18 +521,6 @@ private:
 	typedef CHandle< CBaseCombatCharacter > CBaseCombatCharacterHandle;
 	CNetworkVar( CBaseCombatCharacterHandle, m_hOwner );				// Player carrying this weapon
 
-protected:
-#if defined ( TF_CLIENT_DLL ) || defined ( TF_DLL )
-	// Regulate crit frequency to reduce client-side seed hacking
-	void					AddToCritBucket( float flAmount );
-	void					RemoveFromCritBucket( float flAmount ) { m_flCritTokenBucket -= flAmount; }
-	bool					IsAllowedToWithdrawFromCritBucket( float flDamage );
-
-	float					m_flCritTokenBucket;
-	int						m_nCritChecks;
-	int						m_nCritSeedRequests;
-#endif // TF
-
 public:
 
 	// Networked fields

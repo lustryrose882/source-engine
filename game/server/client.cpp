@@ -36,11 +36,6 @@
 #include "basemultiplayerplayer.h"
 #include "voice_gamemgr.h"
 
-#ifdef TF_DLL
-#include "tf_player.h"
-#include "tf_gamerules.h"
-#endif
-
 #ifdef HL2_DLL
 #include "weapon_physcannon.h"
 #endif
@@ -1287,10 +1282,6 @@ CON_COMMAND_F( setang_exact, "Snap player eyes and orientation to specified pitc
 
 	pPlayer->Teleport( NULL, &newang, NULL );
 	pPlayer->SnapEyeAngles( newang );
-
-#ifdef TF_DLL
-	static_cast<CTFPlayer*>( pPlayer )->DoAnimationEvent( PLAYERANIMEVENT_SNAP_YAW );
-#endif
 }
 
 

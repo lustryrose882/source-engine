@@ -10,10 +10,6 @@
 #include "teamplayroundbased_gamerules.h"
 #include "team_control_point_round.h"
 
-#if defined ( TF_DLL )
-#include "tf_gamerules.h"
-#endif
-
 BEGIN_DATADESC( CTeamControlPointRound )
 	DEFINE_KEYFIELD( m_bDisabled,			FIELD_BOOLEAN,	"StartDisabled" ),
 

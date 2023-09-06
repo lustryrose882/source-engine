@@ -61,10 +61,6 @@ extern ConVar replay_rendersetting_renderglow;
 #include "econ_item_view.h"
 #endif
 
-#if defined( TF_CLIENT_DLL )
-#include "c_tf_player.h"
-#endif
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -354,10 +350,6 @@ void ClientModeShared::Init()
 	ListenForGameEvent( "player_changename" );
 	ListenForGameEvent( "teamplay_broadcast_audio" );
 	ListenForGameEvent( "achievement_earned" );
-
-#if defined( TF_CLIENT_DLL )
-	ListenForGameEvent( "item_found" );
-#endif 
 
 #if defined( REPLAY_ENABLED )
 	ListenForGameEvent( "replay_startrecord" );
@@ -1289,9 +1281,6 @@ void ClientModeShared::DisplayReplayMessage( const char *pLocalizeName, float fl
 			pPanel->MoveToFront();
 			pPanel->SetKeyBoardInputEnabled( true );
 			pPanel->SetMouseInputEnabled( true );
-#if defined( TF_CLIENT_DLL )
-			TFModalStack()->PushModal( pPanel );
-#endif
 		}
 		else
 		{

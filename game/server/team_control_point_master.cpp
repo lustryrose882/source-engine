@@ -10,10 +10,6 @@
 #include "team_control_point_master.h"
 #include "teamplayroundbased_gamerules.h"
 
-#if defined ( TF_DLL )
-#include "tf_gamerules.h"
-#endif
-
 BEGIN_DATADESC( CTeamControlPointMaster )
 	DEFINE_KEYFIELD( m_bDisabled, FIELD_BOOLEAN, "StartDisabled" ),
 	DEFINE_KEYFIELD( m_iszCapLayoutInHUD, FIELD_STRING, "caplayout" ),

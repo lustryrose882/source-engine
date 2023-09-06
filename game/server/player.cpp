@@ -9024,12 +9024,7 @@ bool CPlayerInfo::IsHLTV()
 
 bool CPlayerInfo::IsReplay()
 {
-#ifdef TF_DLL // FIXME: Need run-time check for whether replay is enabled
-	Assert( m_pParent );
-	return m_pParent->IsReplay();
-#else
 	return false;
-#endif
 }
 
 bool CPlayerInfo::IsPlayer() 

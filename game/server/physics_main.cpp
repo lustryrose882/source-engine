@@ -293,9 +293,8 @@ bool CPhysicsPushedEntities::SpeculativelyCheckPush( PhysicsPushedInfo_t &info, 
 		}
 		pBlocker->SetAbsOrigin( pushDestPosition );
 
-#ifndef TF_DLL
 		DevMsg(1, "Ignoring player blocking train!\n");
-#endif
+
 		return true;
 	}
 	return false;

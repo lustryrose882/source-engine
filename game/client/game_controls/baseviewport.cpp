@@ -623,9 +623,7 @@ void CBaseViewport::OnThink()
 
 	// TF does this in OnTick in TFViewport.  This remains to preserve old
 	// behavior in other games
-#if !defined( TF_CLIENT_DLL )
 	m_pAnimController->UpdateAnimations( gpGlobals->curtime );
-#endif
 
 	int count = m_Panels.Count();
 

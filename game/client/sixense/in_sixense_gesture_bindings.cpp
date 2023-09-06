@@ -5,9 +5,6 @@
 
 #include "in_sixense_gesture_bindings.h"
 #include "filesystem.h"
-#ifdef TF_CLIENT_DLL
-#include "tf_gamerules.h"
-#endif
 
 #include <isixense.h>
 #include <sixense_math.hpp>
@@ -425,35 +422,6 @@ void SixenseGestureBindings::CreateDefaultBindings()
 	AddBinding( "right", "trigger_press", "", "+sixense_grid 0", "" );
 	AddBinding( "right", "button_press", "2", "+sixense_grid 1", "" );
 
-#elif defined( TF_CLIENT_DLL )
-
-	AddBinding( "left", "tilt_gesture", "ccw", "+reload", "" );
-	AddBinding( "left", "tilt_gesture", "down", "+duck", "" );
-	AddBinding( "left", "tilt_gesture", "up", "+jump", "" );
-	AddBinding( "left", "tilt_gesture", "right", "impulse 201", "" );
-	AddBinding( "left", "trigger_press", "", "+attack2", "" );
-	AddBinding( "left", "button_press", "start", "cancelselect", "" );
-	AddBinding( "left", "button_press", "bumper", "+duck", "" );
-	AddBinding( "left", "point_gesture", "up", "slot3", "" );
-	AddBinding( "left", "point_gesture", "down", "slot4", "" );
-	AddBinding( "left", "button_press", "3", "open_charinfo_direct", "" );
-	AddBinding( "left", "button_press", "1", "changeclass", "" );
-	AddBinding( "left", "button_press", "2", "changeteam", "" );
-	AddBinding( "left", "button_press", "4", "lastdisguise", "" );
-	AddBinding( "left", "button_press", "joystick", "voicemenu 0 0", "" );
-	AddBinding( "right", "joystick_move", "up", "+context_action", "" );
-	AddBinding( "right", "joystick_move", "left", "invprev", "" );
-	AddBinding( "right", "joystick_move", "right", "invnext", "" );
-	AddBinding( "right", "joystick_move", "down", "lastinv", "" );
-	AddBinding( "right", "button_press", "1", "+sixense_ratchet", "" );
-	AddBinding( "right", "button_press", "2", "cl_decline_first_notification", "" );
-	AddBinding( "right", "button_press", "3", "+voicerecord", "" );
-	AddBinding( "right", "button_press", "4", "cl_trigger_first_notification", "" );
-	AddBinding( "right", "button_press", "joystick", "dropitem", "" );
-	AddBinding( "right", "button_press", "bumper", "taunt", "" );
-	AddBinding( "right", "trigger_press", "", "+attack", "" );
-	AddBinding( "right", "button_press", "start", "+showscores", "" );
-
 #else
 
 	AddBinding( "left", "tilt_gesture", "ccw", "+reload", "" );
@@ -575,33 +543,13 @@ void SixenseGestureBindings::UpdateBindings( sixenseUtils::IButtonStates *pLeftB
 // Give games an opportunity to block commands
 bool SixenseGestureBindings::AllowCommand( char *pActivateCommand )
 {
-#ifdef TF_CLIENT_DLL
-	if ( TFGameRules() && TFGameRules()->IsInTraining() && TFGameRules()->IsWaitingForTrainingContinue() )
-	{
-		if( Q_strcmp( pActivateCommand, "+jump" ) == 0 )
-		{
-			return false;
-		}
-	}
-#endif
-
 	return true;
 }
 
 // If the menu is up, most bindings are blocked. Allow some of them to be activated...
 bool SixenseGestureBindings::AllowMenuCommand( char *pActivateCommand )
 {
-
-#ifdef TF_CLIENT_DLL
-	if( Q_strcmp( pActivateCommand, "+showscores" ) == 0 )
-	{
-		// Allow for showscores when in-menu
-		return true;
-	}
-#endif
-
 	return false;
-
 }
 
 // from here down are just helper funcs to convert between enums and strings and back

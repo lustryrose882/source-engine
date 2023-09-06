@@ -362,9 +362,6 @@ protected:
 	bool		 CheckMaxRounds( void );
 
 	void		 CheckReadyRestart( void );
-#if defined(TF_CLIENT_DLL) || defined(TF_DLL)
-	bool		 AreDefendingPlayersReady();
-#endif
 
 	virtual bool CanChangelevelBecauseOfTimeLimit( void ) { return true; }
 	virtual bool CanGoToStalemate( void ) { return true; }
